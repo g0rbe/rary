@@ -36,13 +36,13 @@ char *RARY_get_fqdn(void) {
     return hostname;
 }
 
-char *RARY_read_to_string(FILE* file, size_t init_size) {
+char *RARY_read_to_string(FILE* file) {
 
     char *str;
     char ch;
 
     //Start size
-    size_t size = init_size;
+    size_t size = 128;
     size_t len = 0;
 
     if((str = calloc(size, sizeof(char))) == NULL) {
@@ -55,7 +55,7 @@ char *RARY_read_to_string(FILE* file, size_t init_size) {
         if(len >= size-1){
 
             // Increase with a 512 byte block
-            size += init_size;
+            size += 128;
 
             if((str = realloc(str, size * sizeof(char))) == NULL) {
                 fprintf(stderr, "Failed to reallocate memory for str\n");
@@ -82,7 +82,7 @@ int RARY_run_proc(const char *command, char *buff) {
 		return -1;
 	}
 	
-    if ((buff = RARY_read_to_string(proc, 512)) == NULL) {
+    if ((buff = RARY_read_to_string(proc)) == NULL) {
         fprintf(stderr, "Failed to read from process\n");
         return -1;
     }
