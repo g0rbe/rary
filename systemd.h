@@ -1,5 +1,5 @@
-#ifndef _SYSTEMD_H
-#define _SYSTEMD_H
+#ifndef RARY_SYSTEMD_H
+#define RARY_SYSTEMD_H
 
 #include <stdio.h>
 

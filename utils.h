@@ -1,5 +1,5 @@
-#ifndef UTILS_H
-#define UTILS_H
+#ifndef RARY_UTILS_H
+#define RARY_UTILS_H
 
 #include <stdio.h>
 
