@@ -72,7 +72,7 @@ char *RARY_read_to_string(FILE* file) {
     return str;
 }
 
-int RARY_run_proc(const char *command, char *buff) {
+int RARY_run_proc(const char *command, char **buff) {
 	
 	FILE *proc = NULL;
     int res;
@@ -82,15 +82,17 @@ int RARY_run_proc(const char *command, char *buff) {
 		return -1;
 	}
 	
-    if ((buff = RARY_read_to_string(proc)) == NULL) {
-        fprintf(stderr, "Failed to read from process\n");
-        return -1;
+    if (buff != NULL) {
+        if ((*buff = RARY_read_to_string(proc)) == NULL) {
+            fprintf(stderr, "Failed to read from process\n");
+            return -1;
+        }
     }
 	
 	if ((res = pclose(proc)) == -1) {
-		free(buff);
-		buff = NULL;
-		return -1;
+        fprintf(stderr, "Failed to close process '%s': internal error\n", command);
+		free(*buff);
+		*buff = NULL;
 	}
 	
 	return res;	

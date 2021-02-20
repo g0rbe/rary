@@ -8,5 +8,6 @@
 #define RARY_TERM_COLOR_NOCOLOR "\033[1;0m"
 
 #include "utils.h"
+#include "systemd.h"
 
 #endif
