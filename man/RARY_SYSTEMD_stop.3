@@ -1,0 +1,29 @@
+.TH RARY_SYSTEMD_stop 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_SYSTEMD_stop \- Stop systemd unit
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "enum RARY_SYSTEMD_status RARY_SYSTEMD_stop(struct RARY_SYSTEMD_unit " *unit );
+
+.SH DESCRIPTION
+
+Stop the given unit.
+
+The returned value will be the same as
+.IR unit->status .
+
+.SH RETURN VALUE
+
+Return
+.I RARY_SYSTEMD_STATUS_INACTIVE
+if unit stopped successfully.
+On error, return
+.IR RARY_SYSTEMD_STATUS_ERROR .
+
+.SH SEE ALSO
+RARY_SYSTEMD_get_unit(3), RARY_SYSTEMD_get_status(3)

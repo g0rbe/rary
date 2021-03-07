@@ -1,0 +1,30 @@
+.TH RARY_FILE_chown 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_FILE_chown \- Change file owner and group
+ 
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "int RARY_FILE_chown(const char " *path ", const char " *name ");"
+
+.SH DESCRIPTION
+
+Change the owner and the group of 
+.IR path .
+
+It set the owner to 
+.IR name .
+
+.SH RETURN VALUE
+
+On success, return
+.IR RARY_OK .
+On error, return
+.IR RARY_FAIL .
+
+.SH SEE ALSO
+RARY_FILE_copy(3)

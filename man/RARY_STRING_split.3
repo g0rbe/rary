@@ -1,0 +1,35 @@
+.TH RARY_STRING_split 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_STRING_split \- Split a string
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "char **RARY_STRING_split(char " *str ", const char " *delim )
+
+.SH DESCRIPTION
+
+Split
+.I str
+with 
+.I delim
+into an array.
+
+The original string is left untouched.
+
+The array is terminated with
+.IR NULL .
+
+The result mist be freed with
+.IR RARY_STRING_array_free ().
+
+.SH RETTURN VALUE
+
+Return a pointer to the string array. On error, return
+.IR NULL .
+
+.SH SEE ALSO
+RARY_STRING_array_free(3)

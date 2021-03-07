@@ -1,0 +1,48 @@
+.TH RARY_FILE_copy 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_FILE_copy \- Copy the content of a file
+ 
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "int RARY_FILE_copy(const char " *source ", const char " *dest ", int  " flag ");"
+
+
+
+
+.SH DESCRIPTION
+
+Copy the content of 
+.I source
+to
+.IR dest .
+
+The function will overwrite the
+.I dest
+if it is exist.
+
+.SH FLAG
+
+.BR RARY_FILE_NOVERWRITE " - Do not overwrite the destination file"
+
+.SH RETURN VALUE
+
+On success return
+.IR RARY_OK .
+On error, return
+.IR RARY_FAIL .
+
+If 
+.I RARY_FILE_NOVERWRITE
+is set, then return
+.I RARY_FAIL
+if 
+.I dest
+is exist.
+
+.SH SEE ALSO
+RARY_FILE_chown(3)

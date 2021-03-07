@@ -1,0 +1,31 @@
+.TH RARY_STRING_read 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_STRING_read \- Read from file
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "char *RARY_STRING_read(FILE* " file );
+
+.SH DESCRIPTION
+
+Read the content of 
+.I file
+into a dynamically allocated string.
+
+The resulted pointer must be freed with
+.IR free ().
+
+.SH RETTURN VALUE
+
+
+Return a pointer to the content of
+.IR file .
+On error, return
+.IR NULL .
+
+.SH SEE ALSO
+free(3), RARY_STRING_create(3), RARY_STRING_split(3), RARY_STRING_array_free(3)

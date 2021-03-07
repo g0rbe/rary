@@ -22,3 +22,11 @@ Include the library with `-lrary`.
 ## Documentation
 
 Documentation can be found in `docs/`.
+
+## man pages
+
+Install man pages:
+
+```bash
+sudo make install-man
+```

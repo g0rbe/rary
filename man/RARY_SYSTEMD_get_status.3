@@ -1,0 +1,46 @@
+.TH RARY_SYSTEMD_get_status 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_SYSTEMD_get_status \- Get the status of the unit
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "enum RARY_SYSTEMD_status RARY_SYSTEMD_get_status(struct RARY_SYSTEMD_unit " *unit );
+
+.SH DESCRIPTION
+
+Get the status of
+.IR unit .
+Status indicate that the
+.I unit
+is active (running), inactive (not running) or failed (something went wrong).
+
+The returned value is the same as 
+.IR unit->status .
+(Actually, the 
+.I unit->status
+is returned).
+
+.SH RETURN VALUE
+
+Return 
+.IR "enum RARY_SYSTEMD_status" .
+
+.IR RARY_SYSTEMD_ERROR " is indicate an internal error."
+
+.SH NOTES
+
+.SY
+enum RARY_SYSTEMD_status {
+    RARY_SYSTEMD_STATUS_INACTIVE = 1,
+    RARY_SYSTEMD_STATUS_ACTIVE = 2,
+    RARY_SYSTEMD_STATUS_FAILED = 3,
+    RARY_SYSTEMD_STATUS_ERROR = -1
+};
+.YS
+
+.SH SEE ALSO
+RARY_SYSTEMD_get_state(3)

@@ -1,0 +1,31 @@
+.TH RARY_STRING_array_free 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_STRING_array_free \- Free a string array
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "void RARY_STRING_array_free(char " **array ", size_t " size )
+
+
+.SH DESCRIPTION
+
+Frees every element of the array and the array itself.
+
+If 
+.I size
+>= 0, then it frees the first 
+.I size
+number of element.
+
+If
+.I size
+< 0, frees the elements until a 
+.I NULL
+found.
+
+.SH SEE ALSO
+RARY_STRING_split(3)

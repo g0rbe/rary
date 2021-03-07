@@ -1,0 +1,50 @@
+.TH RARY_SYSTEMD_get_unit 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_SYSTEMD_get_unit \- Create a systemd unit
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "struct RARY_SYSTEMD_unit *RARY_SYSTEMD_get_unit(const char " *name );
+
+.SH DESCRIPTION
+
+Create a unit struct of the given unit with 
+.IR name .
+
+This should be the first function from 
+.I rary/systemd.h to start work with systemd.
+
+This function set the 
+.I status
+and
+.I state
+parameters.
+But don't rely on it too long, these values may be changed in the unit by other processes.
+
+Always use 
+.IR RARY_SYSTEMD_free_unit ()
+to free the unit.
+
+.SH RETURN VALUE
+
+Return a pointer to a 
+.IR "struct RARY_SYSTEMD_unit" .
+On error, return
+.IR NULL .
+
+.SH NOTES
+
+.SY
+struct RARY_SYSTEMD_unit {
+    char *name;
+    enum RARY_SYSTEMD_status status;
+    enum RARY_SYSTEMD_state state;
+};
+.YS
+
+.SH SEE ALSO
+RARY_SYSTEMD_free_unit(3)

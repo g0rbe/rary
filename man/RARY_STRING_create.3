@@ -1,0 +1,31 @@
+.TH RARY_STRING_create 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_STRING_create \- create a formatted string 
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "char *RARY_STRING_create(const char " *format ", ...);"
+
+
+
+.SH DESCRIPTION
+
+Create a dynamically allocated and formatted string.
+
+.SH RETTURN VALUE
+
+Return a pointer to the string. On error, return
+.IR NULL .
+
+
+.SH NOTES
+
+The resulted pointer must be freed with 
+.BR free ().
+
+.SH SEE ALSO
+free(3)

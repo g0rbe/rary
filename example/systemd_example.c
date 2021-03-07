@@ -12,7 +12,7 @@
  *          All heap blocks were freed -- no leaks are possible
  */
 
-#include "../rary.h"
+#include "../src/rary.h"
 
 #include <stdio.h>
 #include <stdlib.h>

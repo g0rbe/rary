@@ -1,0 +1,63 @@
+.TH RARY_UTILS_run_proc 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_UTILS_run_proc \- Run a shell command
+ 
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "int RARY_UTILS_run_proc(const char " *command ", char " **buff );
+
+.SH DESCRIPTION
+
+Run 
+.I command
+and store the result in 
+.IR buf .
+
+The
+.I buf
+must
+.B not
+be initialized, the pointer will be replaced by
+.IR calloc ().
+
+
+If
+.I buf
+is
+.I NULL
+, then
+.I RARY_run_proc
+is not try to read the
+.I stdout
+, equal to
+.IR "system(\*(lqcommand > /dev/null\*(rq)" .
+This is useful if you need the return code, but dont care about the output.
+
+In case of internal error,
+.I buf
+will be
+.IR NULL .
+
+.SH RETURN VALUE
+
+Return the
+.I command
+return code, or
+.I RARY_FAIL
+on error.
+
+.SH NOTES
+
+To get the
+.IR stderr ,
+append 
+.I 2>&1
+to the end of the command.
+
+.SH SEE ALSO
+free(3)

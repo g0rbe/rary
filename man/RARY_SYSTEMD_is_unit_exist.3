@@ -1,0 +1,58 @@
+.TH RARY_SYSTEMD_is_unit_exist 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_SYSTEMD_is_unit_exist \- Check whether the unit is exist
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "int RARY_SYSTEMD_is_unit_exist(const char " *name );
+
+.SH DESCRIPTION
+
+Check if the given unit name is exist in one of the preconfigured directory.
+The list is set in
+.IR RARY_SYSTEMD_unit_dirs .
+
+.SH RETURN VALUE
+
+Return
+.I 1
+if the unit is exist.
+
+Return
+.I 0
+if the unit is
+.B not
+found.
+
+Return
+.I -1
+on internal error.
+
+.SH NOTES
+
+.SY
+char *RARY_SYSTEMD_unit_dirs[] = {
+    "/etc/systemd/system.control",
+    "/run/systemd/system.control",
+    "/run/systemd/transient",
+    "/run/systemd/generator.early",
+    "/etc/systemd/system",
+    "/etc/systemd/systemd.attached",
+    "/run/systemd/system",
+    "/run/systemd/systemd.attached",
+    "/run/systemd/generator",
+    "/usr/lib/systemd/system",
+    "/run/systemd/generator.late",
+    "/etc/systemd/user",
+    "/run/systemd/user",
+    "/usr/lib/systemd/user",
+    NULL
+};
+.YS
+
+.SH SEE ALSO
+RARY_STRING_split(3)

@@ -1,0 +1,27 @@
+.TH RARY_UTILS_get_fqdn 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_UTILS_get_fqdn \- Get the fully qualified domain name
+ 
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.B char *RARY_UTILS_get_fqdn(void);
+
+.SH DESCRIPTION
+
+Returns the fully qualified domain name of the computer.
+Equal to
+.IR "hostname -f" .
+
+.SH RETTURN VALUE
+
+A pointer to a dynamically allocated string containing the fqdn.
+On error, return
+.IR NULL .
+
+.SH SEE ALSO
+free(3)

@@ -1,0 +1,21 @@
+.TH RARY_SYSTEMD_free_unit 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_SYSTEMD_free_unit \- Free systemd unit
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "void RARY_SYSTEMD_free_unit(struct RARY_SYSTEMD_unit " *unit );
+
+.SH DESCRIPTION
+
+Free 
+.I unit
+got from
+.IR RARY_SYSTEMD_get_unit ().
+
+.SH SEE ALSO
+RARY_SYSTEMD_get_unit(3)

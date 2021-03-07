@@ -1,5 +1,4 @@
 #include "rary.h"
-#include "systemd.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,10 +27,10 @@ char *RARY_SYSTEMD_unit_dirs[] = {
 
 int RARY_SYSTEMD_is_unit_exist(const char *name)
 {
-
     DIR *dirp = NULL;
     struct dirent *direntp = NULL;
 
+    // Iterate over `RARY_SYSTEMD_unit_dirs`
     for (char **dirs_path = RARY_SYSTEMD_unit_dirs; *dirs_path != NULL; dirs_path++) {
 
         // Not every directory is available in every system
@@ -75,26 +74,19 @@ int RARY_SYSTEMD_is_unit_exist(const char *name)
 enum RARY_SYSTEMD_status RARY_SYSTEMD_get_status(struct RARY_SYSTEMD_unit *unit)
 {
 
-    char *command;
-    size_t command_size;
-
+    char *command = NULL;
     char *buf = NULL;
-    
-    command_size = 64 + strlen(unit->name);
 
-    if ((command = calloc(command_size, sizeof(char))) == NULL) {
-        fprintf(stderr, "Failed to allocate memory for command\n");
-        unit->status = RARY_SYSTEMD_STATUS_ERROR;
-        return unit->status;
+    unit->status = RARY_SYSTEMD_STATUS_ERROR;
+    
+    if ((command = RARY_STRING_create("/usr/bin/systemctl is-active %s 2>&1", unit->name, NULL)) == NULL) {
+        fprintf(stderr, "Failed to create formatted string\n");
+        goto simple_ret;
     }
 
-    snprintf(command, command_size -1, "/usr/bin/systemctl is-active %s 2>&1", unit->name);
-
-    if (RARY_run_proc(command, &buf) == -1) {
+    if (RARY_UTILS_run_proc(command, &buf) == -1) {
         fprintf(stderr, "Failed to run command '%s': internal error\n", command);
-        free(command);
-        unit->status = RARY_SYSTEMD_STATUS_ERROR;
-        return unit->status;
+        goto free_command;
     }
 
     if (strcmp(buf, "active\n") == 0) {
@@ -105,37 +97,34 @@ enum RARY_SYSTEMD_status RARY_SYSTEMD_get_status(struct RARY_SYSTEMD_unit *unit)
         unit->status = RARY_SYSTEMD_STATUS_FAILED;
     } else {
         fprintf(stderr, "Unknown output from 'systemctl is-active': %s\n", buf);
+        // Set unit->status again
         unit->status = RARY_SYSTEMD_STATUS_ERROR;
     }
 
-    free(command);
     free(buf);
 
+free_command:
+    free(command);
+
+simple_ret:
     return unit->status;
 }
 
 enum RARY_SYSTEMD_state RARY_SYSTEMD_get_state(struct RARY_SYSTEMD_unit *unit)
 {
     char *command;
-    size_t command_size;
-
     char *buf = NULL;
-    
-    command_size = 64 + strlen(unit->name);
 
-    if ((command = calloc(command_size, sizeof(char))) == NULL) {
-        fprintf(stderr, "Failed to allocate memory for command\n");
-        unit->state = RARY_SYSTEMD_STATE_ERROR;
-        return unit->state;
+    unit->state = RARY_SYSTEMD_STATE_ERROR;
+    
+    if ((command = RARY_STRING_create("/usr/bin/systemctl is-enabled %s 2>&1", unit->name, NULL)) == NULL) {
+        fprintf(stderr, "Failed to create formatted string\n");
+        goto simple_ret;
     }
 
-    snprintf(command, command_size - 1, "/usr/bin/systemctl is-enabled %s 2>&1", unit->name);
-
-    if (RARY_run_proc(command, &buf) == -1) {
+    if (RARY_UTILS_run_proc(command, &buf) == -1) {
         fprintf(stderr, "Failed to run command '%s': internal error\n", command);
-        free(command);
-        unit->state = RARY_SYSTEMD_STATE_ERROR;
-        return unit->state;
+        goto free_command;
     }
 
     if (strcmp(buf, "enabled\n") == 0) {
@@ -147,9 +136,12 @@ enum RARY_SYSTEMD_state RARY_SYSTEMD_get_state(struct RARY_SYSTEMD_unit *unit)
         unit->state = -RARY_SYSTEMD_STATE_ERROR;
     }
 
-    free(command);
     free(buf);
 
+free_command:
+    free(command);
+
+simple_ret:
     return unit->state;
 }
 
@@ -160,7 +152,9 @@ void RARY_SYSTEMD_free_unit(struct RARY_SYSTEMD_unit *unit)
         return;
     }
 
-    free(unit->name);
+    if (unit->name != NULL) {
+        free(unit->name);
+    }
 
     free(unit);
 }
@@ -168,7 +162,8 @@ void RARY_SYSTEMD_free_unit(struct RARY_SYSTEMD_unit *unit)
 struct RARY_SYSTEMD_unit *RARY_SYSTEMD_get_unit(const char *name)
 {
 
-    struct RARY_SYSTEMD_unit *unit;
+    struct RARY_SYSTEMD_unit *unit = NULL;
+    struct RARY_SYSTEMD_unit *result = NULL;
 
     switch (RARY_SYSTEMD_is_unit_exist(name)) {
     case 1:
@@ -176,14 +171,14 @@ struct RARY_SYSTEMD_unit *RARY_SYSTEMD_get_unit(const char *name)
         break;
     case 0:
         fprintf(stderr, "Failed to get systemd unit: %s is not found!\n", name);
-        return NULL;
+        goto simple_ret;
     case -1:
         fprintf(stderr, "Failed to get systemd unit: internal error\n");
-        return NULL;
+        goto simple_ret;
     default:
         // Impossible to get here
         fprintf(stderr, "Got an impossiple value from RARY_SYSTEMD_is_unit_exit(). HOW??\n");
-        return NULL;
+        goto simple_ret;
     }
 
     /*
@@ -193,64 +188,62 @@ struct RARY_SYSTEMD_unit *RARY_SYSTEMD_get_unit(const char *name)
     // Allocate memory for `struct RARY_SYSTEMD_unit`
     if ((unit = calloc(1, sizeof(struct RARY_SYSTEMD_unit))) == NULL) {
         fprintf(stderr, "Failed to allocate memory for struct RARY_SYSTEMD_unit\n");
-        return NULL;
+        goto simple_ret;
     }
 
-    // Duplicate `name`, dont want to rely on it later
+    // Duplicate `name`, dont want to rely on `name` pointer later
     if ((unit->name = strdup(name)) == NULL) {
         fprintf(stderr, "Failed to duplicate name: %s\n", strerror(errno));
-        free(unit);
-        return NULL;
+        goto free_unit;
     }
 
     // Initialize the `status` with the actual state
     if ((unit->status = RARY_SYSTEMD_get_status(unit)) == RARY_SYSTEMD_STATUS_ERROR) {
         fprintf(stderr, "Failed to get the status of %s: internal error\n", name);
-        free(unit->name);
-        free(unit);
-        return NULL;
+        goto free_unit;
     }
 
     // Initialize the `state` with the actual state.
     if ((unit->state = RARY_SYSTEMD_get_state(unit)) == RARY_SYSTEMD_STATE_ERROR) {
         fprintf(stderr, "Failed to check if %s is enabled: internal error\n", name);
-        free(unit->name);
-        free(unit);
-        return NULL;
+        goto free_unit;
     }
-    
-    return unit;
+
+    result = unit;
+    unit = NULL;
+
+free_unit:
+    RARY_SYSTEMD_free_unit(unit);
+
+simple_ret:
+    return result;
 }
 
 int RARY_SYSTEMD_do(struct RARY_SYSTEMD_unit *unit, const char *order)
 {
     char *command;
-    size_t command_size;
 
     int ret_code;
     char *buf;
 
-    int result;
+    int result = -1;
 
     if ((strcmp(order, "start")   != 0) &&
         (strcmp(order, "stop")    != 0) &&
         (strcmp(order, "enable")  != 0) &&
-        (strcmp(order, "disable") != 0))
+        (strcmp(order, "disable") != 0) &&
+        (strcmp(order, "restart") != 0))
     {
         fprintf(stderr, "Invalid order given: %s\n", order);
-        return -1;
+        goto simple_ret;
     } 
 
-    command_size = 64 + strlen(unit->name) + strlen(order);
-
-    if ((command = calloc(command_size, sizeof(char))) == NULL) {
-        fprintf(stderr, "Failed to allocate memory for command\n");
-        return -1;
+    if ((command = RARY_STRING_create("/usr/bin/systemctl %s %s 2>&1", order, unit->name)) == NULL) {
+        fprintf(stderr, "Failed to create formatted string\n");
+        goto simple_ret;
     }
 
-    snprintf(command, command_size - 1, "/usr/bin/systemctl %s %s 2>&1", order, unit->name);
-
-    switch ((ret_code = RARY_run_proc(command, &buf))) {
+    switch ((ret_code = RARY_UTILS_run_proc(command, &buf))) {
     case -1:
         fprintf(stderr, "Failed to %s %s: internal error\n", order, unit->name);
         result = -1;
@@ -272,6 +265,7 @@ int RARY_SYSTEMD_do(struct RARY_SYSTEMD_unit *unit, const char *order)
     free(command);
     free(buf);
 
+simple_ret:
     return result;
 }
 
@@ -318,6 +312,31 @@ enum RARY_SYSTEMD_status RARY_SYSTEMD_stop(struct RARY_SYSTEMD_unit *unit)
         break;
     default:
         fprintf(stderr, "Failed to stop %s: unknown return code: %d\n", unit->name, ret_code);
+        unit->status = RARY_SYSTEMD_STATUS_ERROR;
+        break;
+    }
+
+    return unit->status;
+}
+
+enum RARY_SYSTEMD_status RARY_SYSTEMD_restart(struct RARY_SYSTEMD_unit *unit)
+{
+    int ret_code;
+
+    switch ((ret_code = RARY_SYSTEMD_do(unit, "restart"))) {
+    case -1:
+        fprintf(stderr, "Failed to restart %s: internal error\n", unit->name);
+        unit->status = RARY_SYSTEMD_STATUS_ERROR;
+        break;
+    case 0:
+        unit->status = RARY_SYSTEMD_STATUS_ACTIVE;
+        break;
+    case 1:
+        fprintf(stderr, "Failed to restart %s\n", unit->name);
+        unit->status = RARY_SYSTEMD_STATUS_ERROR;
+        break;
+    default:
+        fprintf(stderr, "Failed to restart %s: unknown return code: %d\n", unit->name, ret_code);
         unit->status = RARY_SYSTEMD_STATUS_ERROR;
         break;
     }

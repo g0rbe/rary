@@ -1,0 +1,45 @@
+.TH RARY_SYSTEMD_get_state 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_SYSTEMD_get_state \- Get the state of the unit
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "enum RARY_SYSTEMD_state RARY_SYSTEMD_get_state(struct RARY_SYSTEMD_unit " *unit );
+
+.SH DESCRIPTION
+
+Get the state of
+.IR unit .
+State indicate that the
+.I unit
+is enabled or disabled.
+
+The returned value is the same as 
+.IR unit->state .
+(Actually, the 
+.I unit->state
+is returned).
+
+.SH RETURN VALUE
+
+Return 
+.IR "enum RARY_SYSTEMD_state" .
+
+.IR RARY_SYSTEMD_ERROR " is indicate an internal error."
+
+.SH NOTES
+
+.SY
+enum RARY_SYSTEMD_state {
+    RARY_SYSTEMD_STATE_ENABLED = 1,
+    RARY_SYSTEMD_STATE_DISABLED = 2,
+    RARY_SYSTEMD_STATE_ERROR = -1
+};
+.YS
+
+.SH SEE ALSO
+RARY_SYSTEMD_get_status(3)

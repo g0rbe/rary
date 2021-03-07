@@ -1,8 +1,6 @@
 #ifndef RARY_SYSTEMD_H
 #define RARY_SYSTEMD_H
 
-#include <stdio.h>
-
 enum RARY_SYSTEMD_status {
     RARY_SYSTEMD_STATUS_INACTIVE = 1,
     RARY_SYSTEMD_STATUS_ACTIVE = 2,
@@ -32,11 +30,11 @@ void RARY_SYSTEMD_free_unit(struct RARY_SYSTEMD_unit *unit);
 
 struct RARY_SYSTEMD_unit *RARY_SYSTEMD_get_unit(const char *name);
 
-int RARY_SYSTEMD_do(struct RARY_SYSTEMD_unit *unit, const char *order);
-
 enum RARY_SYSTEMD_status RARY_SYSTEMD_start(struct RARY_SYSTEMD_unit *unit);
 
 enum RARY_SYSTEMD_status RARY_SYSTEMD_stop(struct RARY_SYSTEMD_unit *unit);
+
+enum RARY_SYSTEMD_status RARY_SYSTEMD_restart(struct RARY_SYSTEMD_unit *unit);
 
 enum RARY_SYSTEMD_state RARY_SYSTEMD_enable(struct RARY_SYSTEMD_unit *unit);
 

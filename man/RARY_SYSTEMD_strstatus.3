@@ -1,0 +1,26 @@
+.TH RARY_SYSTEMD_strstatus 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+RARY_SYSTEMD_strstatus \- Describe the status
+
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.BI "char *RARY_SYSTEMD_strstatus(enum RARY_SYSTEMD_status " status );
+
+.SH DESCRIPTION
+
+Returns a string describing the 
+.IR status . 
+
+.B DO NOT
+free the returned string.
+
+.SH RETURN VALUE
+
+A static string.
+
+.SH SEE ALSO
+RARY_SYSTEMD_get_unit(3), RARY_SYSTEMD_get_status(3)
