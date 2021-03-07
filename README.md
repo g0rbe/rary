@@ -4,29 +4,44 @@
 
 ### Build
 
+Create both shared object (`/usr/lib/x86_64-linux-gnu/library.so`) and archive file (`/usr/lib/x86_64-linux-gnu/library.a`),
+and install the man pages.
+
 ```bash
-sudo make instal
+sudo make install
 sudo make clean
 ```
 
-### Include as a subproject
+### Man pages
+
+TO install man pages only:
 
 ```bash
-git submodule add https://github.com/g0rbe/rary rary
+sudo make man
+```
+
+## Uninstall
+
+```bash
+sudo make remove
 ```
 
 ## Include
 
+### Shared object
+
 Include the library with `-lrary`.
+
+### Archive
+
+Add the archive file to `gcc`:
+
+```bash
+gcc text.c /usr/lib/x86_64-linux-gnu/library.a
+```
 
 ## Documentation
 
-Documentation can be found in `docs/`.
-
-## man pages
-
-Install man pages:
-
-```bash
-sudo make install-man
-```
+Man pages:
+- `rary.h`
+- `RARY_*`
