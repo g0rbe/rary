@@ -9,15 +9,9 @@ ifneq ($(shell whoami), root)
 endif
 
 # Create the include path if not exist
-createpath: checkroot
-ifeq ($(shell [ -e /usr/include/rary ] && echo 1 || echo 0 ), 0)
-	@echo "Creating /usr/include/rary..."
-	@mkdir /usr/include/rary
-endif
-ifeq ($(shell [ -e bin ] && echo 1 || echo 0 ), 0)
-	@echo "Creating bin..."
-	@mkdir bin
-endif
+createpath:
+	@mkdir /usr/include/rary || true
+	@mkdir bin || true
 
 # Create file.o
 file.o: src/file.c
@@ -35,22 +29,22 @@ systemd.o: src/systemd.c
 utils.o: src/utils.c
 	@gcc -c -Wall -Werror -fpic -o bin/utils.o		src/utils.c
 
-all: file.o string.o systemd.o utils.o
-	@gcc -shared -o bin/library.so bin/file.o bin/string.o bin/systemd.o bin/utils.o
-
+# Create library.so
+library.so: file.o string.o systemd.o utils.o
+	@gcc -shared -o bin/library.so	bin/file.o \
+									bin/string.o \
+									bin/systemd.o \
+									bin/utils.o
 
 # Build the objects
-build: createpath
-	@gcc -c -Wall -Werror -fpic src/*.c
-	@gcc -shared -o library.so *.o
-	@mv *.o bin/
-	@mv library.so bin/
+build: createpath library.so
 
 # Install
-install: build
+install: checkroot build install-man
 	@cp bin/library.so /usr/lib/x86_64-linux-gnu
 	@chmod 0755 /usr/lib/x86_64-linux-gnu/library.so
 	@cp src/*.h /usr/include/rary/
+	make clean
 
 # Remove unused binaries 
 clean: 

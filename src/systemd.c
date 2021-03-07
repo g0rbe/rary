@@ -219,6 +219,17 @@ simple_ret:
     return result;
 }
 
+/*
+ * Start, stop, enable or disable the given unit.
+ *
+ * This function is not set the underlying status or state.
+ * Use RARY_SYSTEMD_start, RARY_SYSTEMD_stop, RARY_SYSTEMD_enable or RARY_SYSTEMD_disable instead.
+ *
+ * **RETURN**
+ *  0: Order successful on the given unit.
+ *  1: Failed to do the order.
+ *  -1: Internal error.
+ */
 int RARY_SYSTEMD_do(struct RARY_SYSTEMD_unit *unit, const char *order)
 {
     char *command;

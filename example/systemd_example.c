@@ -2,14 +2,7 @@
  * Rary - systemd example
  * 
  * Build:
- *      gcc systemd_example.c ../systemd.c ../utils.c
- * 
- * Valgrind (OK):
- *      HEAP SUMMARY:
- *          in use at exit: 0 bytes in 0 blocks
- *          total heap usage: 41 allocs, 41 frees, 133,268 bytes allocated
- *
- *          All heap blocks were freed -- no leaks are possible
+ *      gcc systemd_example.c ../src/systemd.c ../src/utils.c ../src/string.c
  */
 
 #include "../src/rary.h"
@@ -33,8 +26,8 @@ int main(void) {
     /*
      * Create a new unit.
      */
-    if ((unit = RARY_SYSTEMD_get_unit("teamviewerd.service")) == NULL) {
-        fprintf(stderr, "Failed to get systemd unit 'teamviewerd.service'\n");
+    if ((unit = RARY_SYSTEMD_get_unit("cups.service")) == NULL) {
+        fprintf(stderr, "Failed to get systemd unit 'cups.service'\n");
         exit(1);
     }
 
@@ -65,13 +58,7 @@ int main(void) {
             RARY_SYSTEMD_free_unit(unit);
             exit(1);
         }
-
-        printf("%s stopped\n", unit->name);
-
-        printf("Unit status after stop: %s\n", RARY_SYSTEMD_strstatus(unit->status));
-        printf("Unit state after stop: %s\n", RARY_SYSTEMD_strstate(unit->state));
     }
-
    
     sleep(3);
 
@@ -86,11 +73,7 @@ int main(void) {
         exit(1);
     }
 
-    printf("Unit status after start: %s\n", RARY_SYSTEMD_strstatus(unit->status));
-    printf("Unit state after start: %s\n", RARY_SYSTEMD_strstate(unit->state));
-
     sleep(3);
-
 
     /*
      * Enable the unit
@@ -103,9 +86,6 @@ int main(void) {
             RARY_SYSTEMD_free_unit(unit);
             exit(1);
         }
-
-        printf("Unit status after enable: %s\n", RARY_SYSTEMD_strstatus(unit->status));
-        printf("Unit state after enable: %s\n", RARY_SYSTEMD_strstate(unit->state));
     }
 
     sleep(3);
@@ -122,11 +102,19 @@ int main(void) {
         exit(1);
     }
 
-    printf("Unit status after disable: %s\n", RARY_SYSTEMD_strstatus(unit->status));
-    printf("Unit state after disable: %s\n", RARY_SYSTEMD_strstate(unit->state));
+    sleep(3);
 
-    printf("Unit should be active, the current status is: %s\n", RARY_SYSTEMD_strstatus(unit->status));
-    printf("Unit should be disabled, the current state is: %s\n", RARY_SYSTEMD_strstate(unit->state));
+    /*
+     * Restart the unit
+     */
+
+    printf("Restaring %s...\n", unit->name);
+
+    if (RARY_SYSTEMD_restart(unit) != RARY_SYSTEMD_STATUS_ACTIVE) {
+        fprintf(stderr, "Failed to restart %s\n", unit->name);
+        RARY_SYSTEMD_free_unit(unit);
+        exit(1);
+    }
 
     sleep(3);
 
@@ -144,7 +132,7 @@ int main(void) {
 
     if (init_state == RARY_SYSTEMD_STATE_ENABLED) {
 
-        printf("Enabling %s, beacuse it was enabled before the example\n", unit->name);
+        printf("Enabling %s, because it was enabled before the example\n", unit->name);
 
         if (RARY_SYSTEMD_enable(unit) != RARY_SYSTEMD_STATE_ENABLED) {
             fprintf(stderr, "Failed to enable %s\n", unit->name);

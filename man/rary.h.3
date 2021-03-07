@@ -1,0 +1,30 @@
+.TH rary 3 2021-03-03 Rary "library's man page"
+
+.SH NAME
+
+rary \- library documentation
+ 
+.SH SYNOPSIS
+
+.B #include <rary/rary.h>
+
+.SH DESCRIPTION
+
+.SY
+    #define RARY_OK         0
+    #define RARY_FAIL       -1
+.YS
+
+Colorize Bash output:
+
+.SY
+    #define RARY_TERM_COLOR_RED     "\\033[0;31m"
+    #define RARY_TERM_COLOR_GREEN   "\\033[0;32m"
+    #define RARY_TERM_COLOR_YELLOW  "\\033[0;33m"
+    #define RARY_TERM_COLOR_BLUE    "\\033[0;34m"
+    #define RARY_TERM_COLOR_NOCOLOR "\\033[0;0m"
+.YS
+
+.SH SEE ALSO
+
+RARY_*(3)
